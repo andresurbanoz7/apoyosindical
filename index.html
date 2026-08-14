@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Calculadora PIRV — Equipo de Apoyo a la Gestion Sindical</title>
+<style>
+  :root{
+    --ink:#1B2B2E;
+    --paper:#F6F4EE;
+    --card:#FFFFFF;
+    --line:#D8D3C4;
+    --teal:#0F4C46;
+    --teal-dark:#0A332F;
+    --gold:#B8862E;
+    --gold-light:#F1E4C6;
+    --alert:#8C2F1E;
+    --alert-bg:#F7E4DE;
+    --ok:#2E5E3A;
+    --ok-bg:#E3EEE1;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    padding:0 0 3rem;
+  }
+  header{
+    background:var(--teal);
+    color:#fff;
+    padding:1.5rem 1.25rem 1.75rem;
+    border-bottom:6px solid var(--gold);
+  }
+  header .eyebrow{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--gold-light);
+    margin:0 0 .35rem;
+    font-weight:600;
+  }
+  header h1{
+    margin:0;
+    font-size:22px;
+    line-height:1.3;
+    font-weight:700;
+  }
+  header p{
+    margin:.6rem 0 0;
+    font-size:14px;
+    color:#DCEAE6;
+    line-height:1.5;
+  }
+  .salary-card label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--teal-dark);
+    margin-bottom:.5rem;
+  }
+  .salary-row{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .salary-row span{
+    font-size:16px;
+    color:#5B5B54;
+    font-weight:600;
+  }
+  .salary-row input{
+    flex:1;
+    font-size:16px;
+    padding:.7rem .7rem;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+  }
+  .salary-card p.hint{
+    font-size:12.5px;
+    color:#7A7A70;
+    margin:.5rem 0 0;
+    line-height:1.5;
+  }
+  main{
+    max-width:520px;
+    margin:0 auto;
+    padding:1.25rem;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.1rem 1.1rem 1.25rem;
+    margin-bottom:1rem;
+  }
+  .var-card{
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+  }
+  .var-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:.75rem;
+  }
+  .var-name{
+    font-size:15px;
+    font-weight:700;
+    color:var(--teal-dark);
+  }
+  .var-result{
+    font-size:20px;
+    font-weight:700;
+    color:var(--teal);
+    min-width:58px;
+    text-align:right;
+  }
+  select{
+    width:100%;
+    font-size:16px;
+    padding:.7rem .6rem;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230F4C46' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right .8rem center;
+    padding-right:2.2rem;
+  }
+  select:focus{
+    outline:none;
+    border-color:var(--teal);
+    box-shadow:0 0 0 3px rgba(15,76,70,.15);
+  }
+  .total-card{
+    background:var(--teal);
+    color:#fff;
+    text-align:center;
+    padding:1.4rem 1.1rem;
+  }
+  .total-card .label{
+    font-size:13px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#BFE0D8;
+    margin:0 0 .3rem;
+    font-weight:600;
+  }
+  .total-card .value{
+    font-size:44px;
+    font-weight:800;
+    line-height:1;
+    color:#fff;
+  }
+  .breakdown{
+    margin-top:1rem;
+    border-top:1px solid rgba(255,255,255,.25);
+    padding-top:.85rem;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:.5rem .75rem;
+    text-align:left;
+  }
+  .breakdown div{
+    font-size:12.5px;
+    color:#DCEAE6;
+    display:flex;
+    justify-content:space-between;
+  }
+  .breakdown div span:last-child{
+    color:#fff;
+    font-weight:700;
+  }
+  .verify-card h2{
+    font-size:14px;
+    margin:0 0 .4rem;
+    color:var(--teal-dark);
+    font-weight:700;
+  }
+  .verify-card p.hint{
+    font-size:13px;
+    color:#5B5B54;
+    margin:0 0 .8rem;
+    line-height:1.5;
+  }
+  .verify-row{
+    display:flex;
+    gap:.6rem;
+    align-items:center;
+  }
+  .verify-row input{
+    flex:1;
+    font-size:16px;
+    padding:.65rem .7rem;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+  }
+  .verify-row span{
+    font-size:14px;
+    color:#5B5B54;
+  }
+  .verify-out{
+    margin-top:.8rem;
+    padding:.75rem .9rem;
+    border-radius:10px;
+    font-size:13.5px;
+    line-height:1.5;
+    display:none;
+  }
+  .verify-out.ok{
+    display:block;
+    background:var(--ok-bg);
+    color:var(--ok);
+    border:1px solid #BFDCC2;
+  }
+  .verify-out.bad{
+    display:block;
+    background:var(--alert-bg);
+    color:var(--alert);
+    border:1px solid #E9C3BA;
+  }
+  .note{
+    font-size:12.5px;
+    color:#7A7A70;
+    line-height:1.6;
+    padding:0 .2rem;
+  }
+  .footer-mark{
+    text-align:center;
+    font-size:12px;
+    color:#9A9A8E;
+    margin-top:1.5rem;
+    padding:0 1rem;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Sindicato Logística Nacional Santa Isabel</p>
+  <h1>Calculadora PIRV</h1>
+  <p>Selecciona el % de cumplimiento real de cada variable y compara el resultado con lo pagado en tu liquidación.</p>
+</header>
+
+<main>
+
+  <div class="card salary-card">
+    <label for="input-sueldo">Sueldo base del socio</label>
+    <div class="salary-row">
+      <span>$</span>
+      <input type="text" inputmode="numeric" id="input-sueldo" placeholder="Ej: 550000">
+    </div>
+    <p class="hint">Opcional. Si lo ingresas, el bono se muestra también en pesos, no solo en porcentaje.</p>
+  </div>
+
+  <div class="card var-card" id="card-ventas">
+    <div class="var-top">
+      <div class="var-name">Ventas</div>
+      <div class="var-result" id="out-ventas">—</div>
+    </div>
+    <select id="sel-ventas"></select>
+  </div>
+
+  <div class="card var-card" id="card-merma">
+    <div class="var-top">
+      <div class="var-name">Merma / Dif. inventario perecibles</div>
+      <div class="var-result" id="out-merma">—</div>
+    </div>
+    <select id="sel-merma"></select>
+  </div>
+
+  <div class="card var-card" id="card-gastos">
+    <div class="var-top">
+      <div class="var-name">Gastos generales</div>
+      <div class="var-result" id="out-gastos">—</div>
+    </div>
+    <select id="sel-gastos"></select>
+  </div>
+
+  <div class="card var-card" id="card-resultado">
+    <div class="var-top">
+      <div class="var-name">Resultado parcial</div>
+      <div class="var-result" id="out-resultado">—</div>
+    </div>
+    <select id="sel-resultado"></select>
+  </div>
+
+  <div class="card total-card">
+    <p class="label">Bono total estimado</p>
+    <div class="value" id="out-total">0,0%</div>
+    <div id="out-total-clp" style="font-size:19px;font-weight:700;color:#fff;margin-top:.35rem;display:none;"></div>
+    <div class="breakdown">
+      <div>Ventas <span id="bd-ventas">0,0%</span></div>
+      <div>Gastos generales <span id="bd-gastos">0,0%</span></div>
+      <div>Merma / Inventario <span id="bd-merma">0,0%</span></div>
+      <div>Resultado parcial <span id="bd-resultado">0,0%</span></div>
+    </div>
+  </div>
+
+  <div class="card verify-card">
+    <h2>¿Coincide con la liquidación?</h2>
+    <p class="hint">Escribe el % de bono PIRV que aparece en la liquidación del socio y compáralo con el total calculado arriba. Si ingresaste el sueldo base, también se compara en pesos.</p>
+    <div class="verify-row">
+      <span>Liquidación:</span>
+      <input type="text" inputmode="decimal" id="input-liq" placeholder="Ej: 36">
+      <span>%</span>
+    </div>
+    <div id="verify-out" class="verify-out"></div>
+  </div>
+
+  <p class="note">Tabla oficial de conversión de % de cumplimiento a % de incentivo, cláusula N° 30 del Contrato Colectivo (PIRV). Cada variable se mide y se paga de forma independiente. Si el cumplimiento de una variable llega al 100%, revisar con el sindicato el tramo superior de la tabla.</p>
+
+  <p class="footer-mark">Herramienta de apoyo para dirigentes — uso en terreno con socios y socias.</p>
+
+</main>
+
+<script>
+var TABLE = [
+  {t:-5, resultado:2.5, ventas:2.0, merma:1.0, gastos:1.0},
+  {t:-4, resultado:2.5, ventas:2.0, merma:1.0, gastos:1.0},
+  {t:-3, resultado:2.5, ventas:2.0, merma:1.0, gastos:1.0},
+  {t:-2, resultado:2.5, ventas:2.0, merma:1.0, gastos:1.0},
+  {t:-1, resultado:2.5, ventas:2.0, merma:1.5, gastos:1.5},
+  {t:0,  resultado:8.0, ventas:6.0, merma:2.0, gastos:2.0},
+  {t:1,  resultado:8.5, ventas:7.0, merma:2.0, gastos:2.0},
+  {t:2,  resultado:8.5, ventas:7.0, merma:2.0, gastos:2.0},
+  {t:3,  resultado:9.0, ventas:7.0, merma:4.0, gastos:4.0},
+  {t:4,  resultado:9.0, ventas:7.0, merma:4.0, gastos:4.0},
+  {t:5,  resultado:15.0,ventas:12.0,merma:4.0, gastos:4.0},
+  {t:6,  resultado:15.0,ventas:12.0,merma:5.0, gastos:5.0},
+  {t:7,  resultado:16.0,ventas:12.0,merma:5.0, gastos:5.0},
+  {t:8,  resultado:17.0,ventas:13.0,merma:5.0, gastos:5.0},
+  {t:9,  resultado:17.0,ventas:13.0,merma:6.0, gastos:6.0},
+  {t:10, resultado:20.0,ventas:16.0,merma:7.5, gastos:7.5},
+  {t:11, resultado:20.0,ventas:16.0,merma:7.5, gastos:7.5},
+  {t:12, resultado:21.0,ventas:17.0,merma:8.5, gastos:8.5},
+  {t:13, resultado:21.0,ventas:17.0,merma:8.5, gastos:8.5},
+  {t:14, resultado:22.0,ventas:17.0,merma:10.0,gastos:10.0},
+  {t:15, resultado:24.0,ventas:20.0,merma:13.0,gastos:13.0}
+];
+
+function fmt(n){
+  return n.toFixed(1).replace(".", ",") + "%";
+}
+
+function fmtCLP(n){
+  return "$" + Math.round(n).toLocaleString("es-CL");
+}
+
+function getSueldo(){
+  var raw = document.getElementById("input-sueldo").value.trim();
+  raw = raw.replace(/[^0-9]/g, "");
+  if(raw === "") return null;
+  var n = parseInt(raw, 10);
+  if(isNaN(n) || n <= 0) return null;
+  return n;
+}
+
+function buildSelect(id, defaultIndex){
+  var sel = document.getElementById(id);
+  TABLE.forEach(function(row, i){
+    var opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = (row.t > 0 ? "+" : "") + row.t + "% cumplimiento";
+    sel.appendChild(opt);
+  });
+  var maxOpt = document.createElement("option");
+  maxOpt.value = "max";
+  maxOpt.textContent = "100% cumplimiento (tope tabla)";
+  sel.appendChild(maxOpt);
+  sel.selectedIndex = defaultIndex;
+}
+
+buildSelect("sel-ventas", 5);
+buildSelect("sel-merma", 5);
+buildSelect("sel-gastos", 5);
+buildSelect("sel-resultado", 5);
+
+var MAXVALS = { ventas:20.0, merma:13.0, gastos:13.0, resultado:24.0 };
+
+function getValue(selId, key){
+  var sel = document.getElementById(selId);
+  var v = sel.value;
+  if(v === "max"){
+    return MAXVALS[key];
+  }
+  return TABLE[parseInt(v,10)][key];
+}
+
+function recalc(){
+  var ventas = getValue("sel-ventas","ventas");
+  var merma = getValue("sel-merma","merma");
+  var gastos = getValue("sel-gastos","gastos");
+  var resultado = getValue("sel-resultado","resultado");
+
+  document.getElementById("out-ventas").textContent = fmt(ventas);
+  document.getElementById("out-merma").textContent = fmt(merma);
+  document.getElementById("out-gastos").textContent = fmt(gastos);
+  document.getElementById("out-resultado").textContent = fmt(resultado);
+
+  document.getElementById("bd-ventas").textContent = fmt(ventas);
+  document.getElementById("bd-merma").textContent = fmt(merma);
+  document.getElementById("bd-gastos").textContent = fmt(gastos);
+  document.getElementById("bd-resultado").textContent = fmt(resultado);
+
+  var total = ventas + merma + gastos + resultado;
+  document.getElementById("out-total").textContent = fmt(total);
+
+  var sueldo = getSueldo();
+  var clpBox = document.getElementById("out-total-clp");
+  if(sueldo !== null){
+    clpBox.style.display = "block";
+    clpBox.textContent = fmtCLP(sueldo * total / 100);
+  } else {
+    clpBox.style.display = "none";
+    clpBox.textContent = "";
+  }
+
+  checkVerify(total);
+}
+
+function checkVerify(total){
+  var input = document.getElementById("input-liq");
+  var out = document.getElementById("verify-out");
+  var raw = input.value.trim().replace(",", ".");
+  if(raw === ""){
+    out.className = "verify-out";
+    out.textContent = "";
+    return;
+  }
+  var liq = parseFloat(raw);
+  if(isNaN(liq)){
+    out.className = "verify-out bad";
+    out.textContent = "Ingresa un número válido, por ejemplo 36 o 36,5";
+    return;
+  }
+  var diff = total - liq;
+  var absDiff = Math.abs(diff);
+  var sueldo = getSueldo();
+  var clpNote = "";
+  if(sueldo !== null && absDiff >= 0.15){
+    clpNote = " Eso equivale a " + fmtCLP(sueldo * absDiff / 100) + ".";
+  }
+  if(absDiff < 0.15){
+    out.className = "verify-out ok";
+    out.textContent = "Coincide con lo calculado (" + fmt(total) + "). No se detecta diferencia.";
+  } else if(diff > 0){
+    out.className = "verify-out bad";
+    out.textContent = "Diferencia detectada: según la tabla debería ser " + fmt(total) + ", pero en la liquidación aparece " + fmt(liq) + ". Faltarían " + fmt(diff) + " del sueldo base." + clpNote + " Pide el respaldo del cálculo real de cada variable a la empresa.";
+  } else {
+    out.className = "verify-out bad";
+    out.textContent = "El monto de la liquidación (" + fmt(liq) + ") es mayor al calculado con estos cumplimientos (" + fmt(total) + "). Revisa que los % de cumplimiento seleccionados sean los reales del período.";
+  }
+}
+
+["sel-ventas","sel-merma","sel-gastos","sel-resultado"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", recalc);
+});
+document.getElementById("input-liq").addEventListener("input", function(){
+  var total = parseFloat(document.getElementById("out-total").textContent.replace(",", "."));
+  checkVerify(total);
+});
+document.getElementById("input-sueldo").addEventListener("input", recalc);
+
+recalc();
+</script>
+
+</body>
+</html>
